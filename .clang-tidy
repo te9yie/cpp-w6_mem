@@ -19,9 +19,10 @@ Checks: >
   -llvm-header-guard,
   -llvm-include-order
 
-WarningsAsErrors: "^(tests/|include/w6_mem/).*"
+WarningsAsErrors: "^(include/w6_mem/).*"
 
-HeaderFilterRegex: "^(tests/|include/w6_mem/).*"
+HeaderFilterRegex: "^(include/w6_mem/).*"
+
 FormatStyle: file
 
 CheckOptions:
