@@ -1,5 +1,7 @@
+#include <cstdint>
 #include <cstring>
 #include <gtest/gtest.h>
+#include <vector>
 #include <w6_mem/allocator.h>
 
 namespace {
@@ -56,8 +58,8 @@ TEST(DefaultAllocatorTest, DifferentSizesAndAlignments) {
         std::size_t alignment{};
     };
 
-    std::vector<TestCase> test_cases = {{1, 1},   {8, 8},     {16, 16},   {32, 32},
-                                        {64, 64}, {128, 128}, {1024, 256}};
+    const std::vector<TestCase> test_cases = {{1, 1},   {8, 8},     {16, 16},   {32, 32},
+                                              {64, 64}, {128, 128}, {1024, 256}};
 
     for (const auto &test_case : test_cases) {
         void *ptr = allocator.allocate(test_case.size, test_case.alignment);

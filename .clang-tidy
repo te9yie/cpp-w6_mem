@@ -12,6 +12,8 @@ Checks: >
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
 
+WarningsAsErrors: ".*"
+
 FormatStyle: file
 
 CheckOptions:
