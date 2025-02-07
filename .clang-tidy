@@ -1,0 +1,73 @@
+#pragma once
+---
+Checks: >
+  *,
+  -fuchsia-*,
+  -modernize-use-trailing-return-type,
+  -llvmlibc-*,
+  -altera-*,
+  -hicpp-special-member-functions,
+  -cppcoreguidelines-special-member-functions,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers,
+  -cppcoreguidelines-pro-type-union-access,
+  -cppcoreguidelines-pro-type-const-cast,
+  -performance-no-int-to-ptr,
+  -misc-non-private-member-variables-in-classes,
+  -llvm-header-guard
+
+WarningsAsErrors: "*"
+
+HeaderFilterRegex: "include/w9_mem/.*\\.h$"
+FormatStyle: file
+
+CheckOptions:
+  # 命名規則
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.ClassPrefix
+    value: ""
+  - key: readability-identifier-naming.InterfaceCase
+    value: CamelCase
+  - key: readability-identifier-naming.InterfacePrefix
+    value: I
+  - key: readability-identifier-naming.MethodCase
+    value: lower_case
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: m_
+  - key: readability-identifier-naming.ProtectedMemberPrefix
+    value: m_
+  - key: readability-identifier-naming.PublicMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.TypeAliasCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+
+  # その他の設定
+  - key: performance-move-const-arg.CheckTriviallyCopyableMove
+    value: false
+  - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: true
+  - key: modernize-use-default-member-init.UseAssignment
+    value: true
+  - key: modernize-use-equals-default.IgnoreMacros
+    value: true
+  - key: readability-function-size.LineThreshold
+    value: 50
+  - key: readability-function-size.ParameterThreshold
+    value: 5
+  - key: readability-function-size.StatementThreshold
+    value: 25
