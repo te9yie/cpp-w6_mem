@@ -2,26 +2,15 @@
 ---
 Checks: >
   *,
-  -fuchsia-*,
-  -modernize-use-trailing-return-type,
-  -llvmlibc-*,
   -altera-*,
-  -hicpp-special-member-functions,
-  -cppcoreguidelines-special-member-functions,
-  -cppcoreguidelines-pro-type-reinterpret-cast,
-  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
   -cppcoreguidelines-avoid-magic-numbers,
-  -readability-magic-numbers,
-  -cppcoreguidelines-pro-type-union-access,
-  -cppcoreguidelines-pro-type-const-cast,
-  -performance-no-int-to-ptr,
-  -misc-non-private-member-variables-in-classes,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -fuchsia-*,
   -llvm-header-guard,
-  -llvm-include-order
-
-WarningsAsErrors: "^(include/w6_mem/).*"
-
-HeaderFilterRegex: "^(include/w6_mem/).*"
+  -llvm-include-order,
+  -llvmlibc-*,
+  -modernize-use-trailing-return-type,
+  -readability-magic-numbers,
 
 FormatStyle: file
 

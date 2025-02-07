@@ -18,22 +18,6 @@ target_compile_definitions(${PROJECT_NAME} INTERFACE
 )
 target_include_directories(${PROJECT_NAME} INTERFACE include)
 
-# 静的解析の設定
-if(W6_MEM_ENABLE_STATIC_ANALYSIS)
-    find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
-    if(CLANG_TIDY_EXE)
-        set(CLANG_TIDY_COMMAND 
-            ${CLANG_TIDY_EXE}
-            -p=${CMAKE_BINARY_DIR}
-            --config-file=${CMAKE_SOURCE_DIR}/.clang-tidy
-        )
-        set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_COMMAND})
-        message(STATUS "Static analysis enabled with clang-tidy: ${CLANG_TIDY_EXE}")
-    else()
-        message(WARNING "clang-tidy not found. Static analysis will be disabled.")
-    endif()
-endif()
-
 # tests
 if (W6_MEM_ENABLE_TESTS)
     enable_testing()
@@ -59,4 +43,20 @@ if (W6_MEM_ENABLE_TESTS)
 
     include(GoogleTest)
     gtest_discover_tests(${PROJECT_NAME}_test)
+endif()
+
+# 静的解析の設定
+if(W6_MEM_ENABLE_STATIC_ANALYSIS)
+    find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+    if(CLANG_TIDY_EXE)
+        set(CLANG_TIDY_COMMAND 
+            ${CLANG_TIDY_EXE}
+            -p=${CMAKE_BINARY_DIR}
+            --config-file=${CMAKE_SOURCE_DIR}/.clang-tidy
+        )
+        set_target_properties(${PROJECT_NAME}_test PROPERTIES CXX_CLANG_TIDY ${CLANG_TIDY_COMMAND})
+        message(STATUS "Static analysis enabled with clang-tidy: ${CLANG_TIDY_EXE}")
+    else()
+        message(WARNING "clang-tidy not found. Static analysis will be disabled.")
+    endif()
 endif()
