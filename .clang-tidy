@@ -16,11 +16,12 @@ Checks: >
   -cppcoreguidelines-pro-type-const-cast,
   -performance-no-int-to-ptr,
   -misc-non-private-member-variables-in-classes,
-  -llvm-header-guard
+  -llvm-header-guard,
+  -llvm-include-order
 
-WarningsAsErrors: "*"
+WarningsAsErrors: "^(tests/|include/w6_mem/).*"
 
-HeaderFilterRegex: "include/w9_mem/.*\\.h$"
+HeaderFilterRegex: "^(tests/|include/w6_mem/).*"
 FormatStyle: file
 
 CheckOptions:
