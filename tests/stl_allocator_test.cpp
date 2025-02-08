@@ -3,12 +3,13 @@
 #include <algorithm>
 #include <cstdlib>
 #include <gtest/gtest.h>
+#include <list>
 #include <vector>
 
 // DummyAllocator は IAllocator の簡易実装です。
-class DummyAllocator : public w6_mem::IAllocator {
+class DummyAllocator : public w6_mem::DefaultAllocator {
 public:
-    std::vector<void*> allocations;
+    std::vector<void*> m_allocations;
 
     /**
      * @brief 指定されたサイズのメモリを確保します。
@@ -18,8 +19,8 @@ public:
      * @return void* 確保されたメモリへのポインタ
      */
     void* allocate(std::size_t size, std::size_t alignment) override {
-        void* ptr = std::malloc(size);
-        allocations.push_back(ptr);
+        void* ptr = w6_mem::DefaultAllocator::allocate(size, alignment);
+        m_allocations.push_back(ptr);
         return ptr;
     }
 
@@ -29,10 +30,10 @@ public:
      * @param ptr 解放するメモリへのポインタ
      */
     void deallocate(void* ptr) override {
-        auto it = std::find(allocations.begin(), allocations.end(), ptr);
-        if (it != allocations.end()) {
-            allocations.erase(it);
-            std::free(ptr);
+        auto it = std::find(m_allocations.begin(), m_allocations.end(), ptr);
+        if (it != m_allocations.end()) {
+            m_allocations.erase(it);
+            w6_mem::DefaultAllocator::deallocate(ptr);
         }
     }
 };
@@ -72,4 +73,35 @@ TEST(StlAllocatorTest, EqualityOperators) {
     EXPECT_TRUE(allocator1 == allocator2);
     EXPECT_FALSE(allocator1 == allocator3);
     EXPECT_TRUE(allocator1 != allocator3);
+}
+
+// std::listでStlAllocatorを利用できるかのテスト
+TEST(StdListStlAllocatorTest, BasicOperations) {
+    DummyAllocator dummy;
+    // DummyAllocatorを使ってStlAllocatorを生成します。
+    w6_mem::StlAllocator<int> allocator(&dummy);
+
+    // StlAllocatorを使用するstd::listを生成します。
+    std::list<int, w6_mem::StlAllocator<int>> myList(allocator);
+
+    // 要素を追加する。
+    myList.push_back(1);
+    myList.push_back(2);
+    myList.push_back(3);
+
+    // リストのサイズを確認
+    EXPECT_EQ(myList.size(), 3u);
+
+    // 要素の順序確認
+    auto it = myList.begin();
+    EXPECT_EQ(*it, 1);
+    ++it;
+    EXPECT_EQ(*it, 2);
+    ++it;
+    EXPECT_EQ(*it, 3);
+
+    // 先頭要素を削除し、残りのサイズと先頭要素を確認
+    myList.pop_front();
+    EXPECT_EQ(myList.size(), 2u);
+    EXPECT_EQ(myList.front(), 2);
 }

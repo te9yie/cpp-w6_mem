@@ -11,6 +11,15 @@ Checks: >
   -llvmlibc-*,
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
+  -readability-identifier-naming,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-no-malloc,
+  -hicpp-no-malloc,
+  -misc-non-private-member-variables-in-classes,
+  -readability-identifier-length,
+  -hicpp-uppercase-literal-suffix,
+  -readability-uppercase-literal-suffix,
+  -bugprone-easily-swappable-parameters,
 
 WarningsAsErrors: ".*"
 
