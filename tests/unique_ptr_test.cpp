@@ -2,6 +2,7 @@
 #include "w6_mem/unique_ptr.h"
 #include <cstddef>
 #include <gtest/gtest.h>
+#include <utility>
 
 namespace w6_mem {
 namespace {
