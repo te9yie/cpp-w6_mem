@@ -35,6 +35,7 @@ if (W6_MEM_ENABLE_TESTS)
 
     add_executable(${PROJECT_NAME}_test
         tests/allocator_test.cpp
+        tests/stl_allocator_test.cpp
     )
     target_link_libraries(${PROJECT_NAME}_test PRIVATE
         ${PROJECT_NAME}
