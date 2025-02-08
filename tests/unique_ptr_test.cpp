@@ -1,5 +1,6 @@
 #include "w6_mem/allocator.h"
 #include "w6_mem/unique_ptr.h"
+#include <cstddef>
 #include <gtest/gtest.h>
 
 namespace w6_mem {
@@ -118,13 +119,13 @@ private:
 };
 
 TEST(UniquePtrTest, DefaultConstructor) {
-    UniquePtr<TestClass> ptr;
+    const UniquePtr<TestClass> ptr;
     EXPECT_FALSE(ptr);
     EXPECT_EQ(ptr.get(), nullptr);
 }
 
 TEST(UniquePtrTest, NullptrConstructor) {
-    UniquePtr<TestClass> ptr(nullptr);
+    const UniquePtr<TestClass> ptr(nullptr);
     EXPECT_FALSE(ptr);
     EXPECT_EQ(ptr.get(), nullptr);
 }
@@ -139,7 +140,7 @@ TEST(UniquePtrTest, MakeUnique) {
 TEST(UniquePtrTest, MoveConstructor) {
     DefaultAllocator allocator;
     auto ptr1 = make_unique<TestClass>(&allocator, 42);
-    UniquePtr<TestClass> ptr2(std::move(ptr1));
+    const UniquePtr<TestClass> ptr2(std::move(ptr1));
 
     EXPECT_FALSE(ptr1); // NOLINT
     EXPECT_TRUE(ptr2);
@@ -178,7 +179,7 @@ TEST(UniquePtrTest, OperatorDereference) {
 
 TEST(UniquePtrTest, BooleanConversion) {
     DefaultAllocator allocator;
-    UniquePtr<TestClass> null_ptr;
+    const UniquePtr<TestClass> null_ptr;
     auto valid_ptr = make_unique<TestClass>(&allocator);
 
     EXPECT_FALSE(null_ptr);
