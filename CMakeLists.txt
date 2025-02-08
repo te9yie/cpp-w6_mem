@@ -10,11 +10,11 @@ include(FetchContent)
 add_library(${PROJECT_NAME} INTERFACE)
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 target_compile_options(${PROJECT_NAME} INTERFACE
-  $<$<CXX_COMPILER_ID:MSVC>:/utf-8 /W4 /WX /EHa- /GR->
-  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror -fno-exceptions -fno-rtti>
+    $<$<CXX_COMPILER_ID:MSVC>:/utf-8 /W4 /WX /EHa- /GR->
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror -fno-exceptions -fno-rtti>
 )
 target_compile_definitions(${PROJECT_NAME} INTERFACE
-  $<$<CXX_COMPILER_ID:MSVC>:_HAS_EXCEPTIONS=0>
+    $<$<CXX_COMPILER_ID:MSVC>:_HAS_EXCEPTIONS=0>
 )
 target_include_directories(${PROJECT_NAME} INTERFACE include)
 

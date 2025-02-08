@@ -87,7 +87,7 @@ public:
      */
     T& operator*() const {
         assert(m_ptr);
-        return *m_ptr;
+        return *m_ptr; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
     }
 
     /**
@@ -224,7 +224,7 @@ public:
     T& operator[](size_t index) {
         assert(m_ptr);
         assert(index < m_length);
-        return m_ptr[index];
+        return m_ptr[index]; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
     }
 
     /**
@@ -235,7 +235,7 @@ public:
     const T& operator[](size_t index) const {
         assert(m_ptr);
         assert(index < m_length);
-        return m_ptr[index];
+        return m_ptr[index]; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
     }
 
     /**
