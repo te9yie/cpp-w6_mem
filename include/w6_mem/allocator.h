@@ -37,17 +37,13 @@ public:
 /**
  * @brief IAllocatorのデフォルト実装
  *
- * このクラスは、システム標準のメモリアロケーション関数（std::aligned_alloc, std::aligned_free
- * 等）を利用して、 メモリの割り当てと解放を行います。
+ * このクラスは、システム標準のメモリアロケーション関数を利用して
+ * メモリの割り当てと解放を行います。
  */
 class DefaultAllocator : public IAllocator {
 public:
     /**
-     * @brief メモリを割り当てます。
-     *
-     * @param size 割り当てるサイズ（バイト単位）
-     * @param alignment 必要なアライメント値
-     * @return void* 割り当てられたメモリへのポインタ
+     * @copydoc IAllocator::allocate
      */
     void* allocate(std::size_t size, std::size_t alignment) override {
 #if defined(_MSC_VER)
@@ -58,9 +54,7 @@ public:
     }
 
     /**
-     * @brief メモリを解放します。
-     *
-     * @param ptr 解放するメモリへのポインタ
+     * @copydoc IAllocator::deallocate
      */
     void deallocate(void* ptr) override {
 #if defined(_MSC_VER)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "allocator.h"
+#include <cassert>
 #include <cstddef>
 #include <memory>
 #include <type_traits>
@@ -13,6 +14,13 @@ namespace w6_mem {
  */
 template <typename T>
 class StlAllocator {
+private:
+    template <typename U>
+    friend class StlAllocator;
+
+private:
+    IAllocator* m_allocator = nullptr;
+
 public:
     // STLアロケータの要件に基づく型定義
     using value_type = T;
@@ -42,7 +50,9 @@ public:
      *
      * @param allocator 内部で用いるアロケータへのポインタ
      */
-    /*explicit*/ StlAllocator(IAllocator* allocator) : m_allocator(allocator) {}
+    /*explicit*/ StlAllocator(IAllocator* allocator) : m_allocator(allocator) {
+        assert(allocator);
+    }
 
     /**
      * @brief 異なる型からのコピーコンストラクタ
@@ -59,12 +69,9 @@ public:
      * 指定された個数のT型オブジェクト用のメモリをIAllocatorを用いて確保します。
      *
      * @param n 確保するオブジェクトの個数
-     * @return T* 確保されたメモリへのポインタ。nが0の場合はnullptrを返します。
+     * @return T* 確保されたメモリへのポインタ。
      */
     T* allocate(size_type n) {
-        if (n == 0) {
-            return nullptr;
-        }
         void* memory = m_allocator->allocate(n * sizeof(T), alignof(T));
         return static_cast<T*>(memory);
     }
@@ -78,9 +85,7 @@ public:
      * @param (unused) この引数は未使用です。
      */
     void deallocate(T* p, size_type) {
-        if (p) {
-            m_allocator->deallocate(p);
-        }
+        m_allocator->deallocate(p);
     }
 
     /**
@@ -106,7 +111,7 @@ public:
      * @return false 同じ場合
      */
     bool operator!=(const StlAllocator& other) const {
-        return !(*this == other);
+        return !operator==(other);
     }
 
     /**
@@ -119,12 +124,6 @@ public:
     IAllocator* get_allocator() const {
         return m_allocator;
     }
-
-private:
-    IAllocator* m_allocator;
-
-    template <typename U>
-    friend class StlAllocator;
 };
 
 } // namespace w6_mem

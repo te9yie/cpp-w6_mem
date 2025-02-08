@@ -1,10 +1,10 @@
-#include "w6_mem/allocator.h"
-#include "w6_mem/stl_allocator.h"
 #include <algorithm>
 #include <cstdlib>
 #include <gtest/gtest.h>
 #include <list>
 #include <vector>
+#include <w6_mem/allocator.h>
+#include <w6_mem/stl_allocator.h>
 
 // DummyAllocator は IAllocator の簡易実装です。
 class DummyAllocator : public w6_mem::DefaultAllocator {
@@ -47,12 +47,13 @@ TEST(StlAllocatorTest, AllocationNonZero) {
     allocator.deallocate(p, 10);
 }
 
-// StlAllocator の allocate() がゼロサイズの場合、nullptrを返すことを確認します。
+// StlAllocator の allocate() がゼロサイズの場合でも、nullptr以外のポインタを返すことを確認します。
 TEST(StlAllocatorTest, AllocationZero) {
     DummyAllocator dummy;
     w6_mem::StlAllocator<int> allocator(&dummy);
     int* p = allocator.allocate(0);
-    EXPECT_EQ(p, nullptr);
+    EXPECT_NE(p, nullptr);
+    allocator.deallocate(p, 0);
 }
 
 // get_allocator() が正しいポインタを返すことを確認します。

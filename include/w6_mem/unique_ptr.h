@@ -28,12 +28,17 @@ public:
     using element_type = T;
     using pointer = T*;
 
+private:
+    IAllocator* m_allocator = nullptr;
+    void* m_allocated_memory = nullptr;
+    pointer m_ptr = nullptr;
+
 public:
     /**
      * @brief デフォルトコンストラクタ
      * 初期状態では空のポインタとアロケータを持ちます。
      */
-    constexpr UniquePtr() : m_allocator(nullptr), m_ptr(nullptr), m_allocated_memory(nullptr) {}
+    constexpr UniquePtr() : m_allocator(nullptr), m_allocated_memory(nullptr), m_ptr(nullptr) {}
 
     /**
      * @brief nullptrからの構築
@@ -43,11 +48,11 @@ public:
     /**
      * @brief ポインタとアロケータからの構築
      * @param allocator 使用するアロケータ
-     * @param p 管理対象のオブジェクトへのポインタ
      * @param allocated_memory アロケータが割り当てたメモリブロック
+     * @param p 管理対象のオブジェクトへのポインタ
      */
-    UniquePtr(IAllocator* allocator, pointer p, void* allocated_memory)
-        : m_allocator(allocator), m_ptr(p), m_allocated_memory(allocated_memory) {}
+    UniquePtr(IAllocator* allocator, void* allocated_memory, pointer p)
+        : m_allocator(allocator), m_allocated_memory(allocated_memory), m_ptr(p) {}
 
     /**
      * @brief 派生クラスから基底クラスへのムーブ変換コンストラクタ
@@ -56,19 +61,22 @@ public:
      */
     template <typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
     UniquePtr(UniquePtr<U>&& other)
-        : m_allocator(other.m_allocator), m_ptr(static_cast<T*>(other.m_ptr)),
-          m_allocated_memory(other.m_allocated_memory) {
+        : m_allocator(other.m_allocator), m_allocated_memory(other.m_allocated_memory),
+          m_ptr(other.m_ptr) {
         other.m_allocator = nullptr;
-        other.m_ptr = nullptr;
         other.m_allocated_memory = nullptr;
+        other.m_ptr = nullptr;
     }
 
     /**
      * @brief ムーブコンストラクタ
      */
     UniquePtr(UniquePtr&& other)
-        : m_allocator(nullptr), m_ptr(nullptr), m_allocated_memory(nullptr) {
-        swap(other);
+        : m_allocator(other.m_allocator), m_allocated_memory(other.m_allocated_memory),
+          m_ptr(other.m_ptr) {
+        other.m_allocator = nullptr;
+        other.m_allocated_memory = nullptr;
+        other.m_ptr = nullptr;
     }
 
     /**
@@ -87,7 +95,7 @@ public:
      */
     T& operator*() const {
         assert(m_ptr);
-        return *m_ptr; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
+        return *m_ptr; // NOLINT
     }
 
     /**
@@ -133,14 +141,9 @@ public:
     void swap(UniquePtr& other) {
         using std::swap;
         swap(m_allocator, other.m_allocator);
-        swap(m_ptr, other.m_ptr);
         swap(m_allocated_memory, other.m_allocated_memory);
+        swap(m_ptr, other.m_ptr);
     }
-
-private:
-    IAllocator* m_allocator = nullptr;
-    pointer m_ptr = nullptr;
-    void* m_allocated_memory = nullptr;
 };
 
 /**
@@ -158,12 +161,18 @@ public:
     using element_type = T;
     using pointer = T*;
 
+private:
+    IAllocator* m_allocator = nullptr;
+    void* m_allocated_memory = nullptr;
+    pointer m_ptr = nullptr;
+    size_t m_length = 0;
+
 public:
     /**
      * @brief デフォルトコンストラクタ（配列版）
      */
     constexpr UniquePtr()
-        : m_allocator(nullptr), m_ptr(nullptr), m_allocated_memory(nullptr), m_length(0) {}
+        : m_allocator(nullptr), m_allocated_memory(nullptr), m_ptr(nullptr), m_length(0) {}
 
     /**
      * @brief nullptrからの構築（配列版）
@@ -173,12 +182,12 @@ public:
     /**
      * @brief ポインタ、メモリブロック、アロケータ、およびサイズから構築（配列版）
      * @param allocator 使用するアロケータ
-     * @param ptr 配列の先頭ポインタ
      * @param allocated_memory アロケータが割り当てたメモリブロック
+     * @param ptr 配列の先頭ポインタ
      * @param length 配列の要素数
      */
-    UniquePtr(IAllocator* allocator, pointer ptr, void* allocated_memory, size_t length)
-        : m_allocator(allocator), m_ptr(ptr), m_allocated_memory(allocated_memory),
+    UniquePtr(IAllocator* allocator, void* allocated_memory, pointer ptr, size_t length)
+        : m_allocator(allocator), m_allocated_memory(allocated_memory), m_ptr(ptr),
           m_length(length) {}
 
     /**
@@ -186,11 +195,11 @@ public:
      * 他のUniquePtrからリソースを奪取します。
      */
     UniquePtr(UniquePtr&& other)
-        : m_allocator(other.m_allocator), m_ptr(other.m_ptr),
-          m_allocated_memory(other.m_allocated_memory), m_length(other.m_length) {
+        : m_allocator(other.m_allocator), m_allocated_memory(other.m_allocated_memory),
+          m_ptr(other.m_ptr), m_length(other.m_length) {
         other.m_allocator = nullptr;
-        other.m_ptr = nullptr;
         other.m_allocated_memory = nullptr;
+        other.m_ptr = nullptr;
         other.m_length = 0;
     }
 
@@ -224,7 +233,7 @@ public:
     T& operator[](size_t index) {
         assert(m_ptr);
         assert(index < m_length);
-        return m_ptr[index]; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
+        return m_ptr[index]; // NOLINT
     }
 
     /**
@@ -235,7 +244,7 @@ public:
     const T& operator[](size_t index) const {
         assert(m_ptr);
         assert(index < m_length);
-        return m_ptr[index]; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
+        return m_ptr[index]; // NOLINT
     }
 
     /**
@@ -270,16 +279,10 @@ public:
     void swap(UniquePtr& other) {
         using std::swap;
         swap(m_allocator, other.m_allocator);
-        swap(m_ptr, other.m_ptr);
         swap(m_allocated_memory, other.m_allocated_memory);
+        swap(m_ptr, other.m_ptr);
         swap(m_length, other.m_length);
     }
-
-private:
-    IAllocator* m_allocator = nullptr;
-    pointer m_ptr = nullptr;
-    void* m_allocated_memory = nullptr;
-    size_t m_length = 0;
 };
 
 /**
@@ -323,7 +326,7 @@ inline typename MakeUnique<T>::Single make_unique(IAllocator* allocator, Args&&.
     }
 
     T* object = new (memory) T(std::forward<Args>(args)...);
-    return UniquePtr<T>(allocator, object, memory);
+    return UniquePtr<T>(allocator, memory, object);
 }
 
 /**
@@ -348,7 +351,7 @@ inline typename MakeUnique<Ts>::Array make_unique(IAllocator* allocator, size_t 
 
     // 配列全体を一度に構築
     T* ptr = new (memory) T[length]();
-    return UniquePtr<Ts>(allocator, ptr, memory, length);
+    return UniquePtr<Ts>(allocator, memory, ptr, length);
 }
 
 } // namespace w6_mem
