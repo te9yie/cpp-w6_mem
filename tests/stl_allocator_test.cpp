@@ -58,7 +58,7 @@ TEST(StlAllocatorTest, AllocationZero) {
 // get_allocator() が正しいポインタを返すことを確認します。
 TEST(StlAllocatorTest, GetAllocator) {
     DummyAllocator dummy;
-    w6_mem::StlAllocator<int> allocator(&dummy);
+    const w6_mem::StlAllocator<int> allocator(&dummy);
     EXPECT_EQ(allocator.get_allocator(), &dummy);
 }
 
@@ -66,9 +66,9 @@ TEST(StlAllocatorTest, GetAllocator) {
 TEST(StlAllocatorTest, EqualityOperators) {
     DummyAllocator dummy1;
     DummyAllocator dummy2;
-    w6_mem::StlAllocator<int> allocator1(&dummy1);
-    w6_mem::StlAllocator<int> allocator2(&dummy1);
-    w6_mem::StlAllocator<int> allocator3(&dummy2);
+    const w6_mem::StlAllocator<int> allocator1(&dummy1);
+    const w6_mem::StlAllocator<int> allocator2(&dummy1);
+    const w6_mem::StlAllocator<int> allocator3(&dummy2);
 
     EXPECT_TRUE(allocator1 == allocator2);
     EXPECT_FALSE(allocator1 == allocator3);
@@ -79,7 +79,7 @@ TEST(StlAllocatorTest, EqualityOperators) {
 TEST(StdListStlAllocatorTest, BasicOperations) {
     DummyAllocator dummy;
     // DummyAllocatorを使ってStlAllocatorを生成します。
-    w6_mem::StlAllocator<int> allocator(&dummy);
+    const w6_mem::StlAllocator<int> allocator(&dummy);
 
     // StlAllocatorを使用するstd::listを生成します。
     std::list<int, w6_mem::StlAllocator<int>> myList(allocator);
